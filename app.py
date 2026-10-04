@@ -68,10 +68,16 @@ if st.button("Предсказать"):
 
     prediction = model.predict(passenger)
 
+    probability = model.predict_proba(passenger)
+    survival_chance = probability[0][1] * 100
+
     if prediction[0] == 1:
         st.success(f"{name}: пассажир, скорее всего, выжил.")
     else:
         st.error(f"{name}: пассажир, скорее всего, не выжил.")
+
+    st.write(f"Вероятность выживания: {survival_chance:.1f}%")
+    st.progress(int(survival_chance))
 
 
 st.divider()
@@ -112,7 +118,18 @@ passenger_data["Survived"] = passenger_data["Survived"].replace({
     1: "Выжил"
 })
 
+passenger_data = passenger_data.rename(columns={
+    "PassengerId": "ID",
+    "Name": "Имя",
+    "Sex": "Пол",
+    "Age": "Возраст",
+    "Pclass": "Класс",
+    "Fare": "Стоимость билета",
+    "Survived": "Статус"
+})
+
 st.dataframe(
     passenger_data,
-    use_container_width=True
+    width="stretch",
+    height=500
 )
