@@ -72,3 +72,47 @@ if st.button("Предсказать"):
         st.success(f"{name}: пассажир, скорее всего, выжил.")
     else:
         st.error(f"{name}: пассажир, скорее всего, не выжил.")
+
+
+st.divider()
+
+st.header("📊 Статистика выживаемости")
+
+survival_counts = data["Survived"].value_counts()
+
+chart_data = pd.DataFrame({
+    "Статус": ["Не выжили", "Выжили"],
+    "Количество": [
+        survival_counts[0],
+        survival_counts[1]
+    ]
+})
+
+st.bar_chart(
+    chart_data,
+    x="Статус",
+    y="Количество"
+)
+
+st.divider()
+
+st.header("📋 Данные пассажиров")
+
+passenger_data = data[
+    ["PassengerId", "Name", "Sex", "Age", "Pclass", "Fare", "Survived"]
+].copy()
+
+passenger_data["Sex"] = passenger_data["Sex"].replace({
+    "male": "Мужчина",
+    "female": "Женщина"
+})
+
+passenger_data["Survived"] = passenger_data["Survived"].replace({
+    0: "Не выжил",
+    1: "Выжил"
+})
+
+st.dataframe(
+    passenger_data,
+    use_container_width=True
+)
